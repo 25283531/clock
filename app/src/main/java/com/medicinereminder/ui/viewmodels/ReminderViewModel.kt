@@ -1,5 +1,6 @@
 package com.medicinereminder.ui.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.medicinereminder.domain.model.ReminderModel
@@ -8,7 +9,9 @@ import com.medicinereminder.domain.usecase.reminder.AddReminderUseCase
 import com.medicinereminder.domain.usecase.reminder.UpdateReminderUseCase
 import com.medicinereminder.domain.usecase.reminder.DeleteReminderUseCase
 import com.medicinereminder.domain.usecase.reminder.GetReminderByIdUseCase
+import com.medicinereminder.manager.ReminderManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -27,8 +30,12 @@ class ReminderViewModel @Inject constructor(
     private val addReminderUseCase: AddReminderUseCase,
     private val updateReminderUseCase: UpdateReminderUseCase,
     private val deleteReminderUseCase: DeleteReminderUseCase,
-    private val getReminderByIdUseCase: GetReminderByIdUseCase
+    private val getReminderByIdUseCase: GetReminderByIdUseCase,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
+    
+    // 提醒管理器
+    private val reminderManager = ReminderManager(context)
 
     // 提醒列表
     private val _reminders = MutableStateFlow(emptyList<ReminderModel>())
@@ -83,6 +90,8 @@ class ReminderViewModel @Inject constructor(
     fun deleteReminder(reminder: ReminderModel) {
         viewModelScope.launch {
             deleteReminderUseCase(reminder)
+            // 取消提醒闹钟
+            reminderManager.cancelReminder(reminder.id)
         }
     }
 

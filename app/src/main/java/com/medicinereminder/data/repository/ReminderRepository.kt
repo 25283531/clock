@@ -72,4 +72,11 @@ class ReminderRepository(private val reminderDao: ReminderDao) {
     suspend fun getActiveReminderCount(): Int {
         return reminderDao.getActiveReminderCount()
     }
+
+    /**
+     * 删除所有提醒
+     */
+    suspend fun deleteAllReminders() {
+        reminderDao.deleteAllReminders()
+    }
 }

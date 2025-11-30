@@ -4,11 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.medicinereminder.ui.screens.AddEditMedicineScreen
+import com.medicinereminder.ui.screens.AddEditReminderScreen
 import com.medicinereminder.ui.screens.DashboardScreen
+import com.medicinereminder.ui.screens.HistoryScreen
 import com.medicinereminder.ui.screens.MedicineListScreen
 import com.medicinereminder.ui.screens.ReminderListScreen
-import com.medicinereminder.ui.screens.HistoryScreen
-import com.medicinereminder.ui.screens.AddEditMedicineScreen
+import com.medicinereminder.ui.screens.SettingsScreen
 import com.medicinereminder.ui.screens.AddEditReminderScreen
 
 /**
@@ -51,10 +53,14 @@ fun AppNavigation(navController: NavHostController) {
             )
         }
         // 服药记录
-        composable(route = Screen.History.route) {
-            HistoryScreen(navController = navController)
-        }
+    composable(route = Screen.History.route) {
+        HistoryScreen(navController = navController)
     }
+    // 设置
+    composable(route = Screen.Settings.route) {
+        SettingsScreen(navController = navController)
+    }
+}
 }
 
 /**
@@ -84,5 +90,9 @@ enum class Screen(val route: String) {
     /**
      * 服药记录
      */
-    History("history")
+    History("history"),
+    /**
+     * 设置
+     */
+    Settings("settings")
 }

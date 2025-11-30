@@ -88,6 +88,9 @@ fun DashboardScreen(navController: NavHostController) {
                 },
                 onViewHistory = {
                     navController.navigate(Screen.History.route)
+                },
+                onViewSettings = {
+                    navController.navigate(Screen.Settings.route)
                 }
             )
         }
@@ -288,6 +291,7 @@ fun StatisticItem(
  * @param onViewMedicines 查看药物列表按钮点击事件
  * @param onViewReminders 查看提醒列表按钮点击事件
  * @param onViewHistory 查看历史记录按钮点击事件
+ * @param onViewSettings 查看设置按钮点击事件
  */
 @Composable
 fun ActionButtons(
@@ -295,7 +299,8 @@ fun ActionButtons(
     onAddReminder: () -> Unit,
     onViewMedicines: () -> Unit,
     onViewReminders: () -> Unit,
-    onViewHistory: () -> Unit
+    onViewHistory: () -> Unit,
+    onViewSettings: () -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -349,6 +354,18 @@ fun ActionButtons(
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(text = "历史记录")
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Button(
+                    onClick = onViewSettings,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(text = "设置")
                 }
             }
         }

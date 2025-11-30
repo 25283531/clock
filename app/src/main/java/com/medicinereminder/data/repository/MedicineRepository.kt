@@ -65,4 +65,11 @@ class MedicineRepository(private val medicineDao: MedicineDao) {
     suspend fun getMedicineCount(): Int {
         return medicineDao.getMedicineCount()
     }
+
+    /**
+     * 删除所有药物
+     */
+    suspend fun deleteAllMedicines() {
+        medicineDao.deleteAllMedicines()
+    }
 }

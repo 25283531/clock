@@ -66,4 +66,10 @@ interface ReminderDao {
      */
     @Query("SELECT COUNT(*) FROM reminders WHERE isActive = 1")
     suspend fun getActiveReminderCount(): Int
+
+    /**
+     * 删除所有提醒
+     */
+    @Query("DELETE FROM reminders")
+    suspend fun deleteAllReminders()
 }

@@ -1,5 +1,6 @@
 package com.medicinereminder.ui.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.medicinereminder.domain.model.MedicineRecordModel
@@ -7,13 +8,16 @@ import com.medicinereminder.domain.model.NextDoseModel
 import com.medicinereminder.domain.usecase.medicine.GetMedicineCountUseCase
 import com.medicinereminder.domain.usecase.reminder.CalculateNextDoseUseCase
 import com.medicinereminder.domain.usecase.reminder.GetActiveRemindersUseCase
+import com.medicinereminder.domain.usecase.reminder.GetAllRemindersUseCase
 import com.medicinereminder.domain.usecase.reminder.GetReminderCountUseCase
 import com.medicinereminder.domain.usecase.record.AddMedicineRecordUseCase
 import com.medicinereminder.domain.usecase.record.GetTodayRecordsUseCase
 import com.medicinereminder.domain.usecase.record.GetTodayTakenCountUseCase
 import com.medicinereminder.domain.usecase.record.GetTodayMissedCountUseCase
 import com.medicinereminder.domain.usecase.record.UpdateMedicineRecordUseCase
+import com.medicinereminder.manager.ReminderManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -31,6 +35,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     private val getActiveRemindersUseCase: GetActiveRemindersUseCase,
+    private val getAllRemindersUseCase: GetAllRemindersUseCase,
     private val calculateNextDoseUseCase: CalculateNextDoseUseCase,
     private val getMedicineCountUseCase: GetMedicineCountUseCase,
     private val getReminderCountUseCase: GetReminderCountUseCase,
@@ -38,8 +43,12 @@ class DashboardViewModel @Inject constructor(
     private val getTodayTakenCountUseCase: GetTodayTakenCountUseCase,
     private val getTodayMissedCountUseCase: GetTodayMissedCountUseCase,
     private val addMedicineRecordUseCase: AddMedicineRecordUseCase,
-    private val updateMedicineRecordUseCase: UpdateMedicineRecordUseCase
+    private val updateMedicineRecordUseCase: UpdateMedicineRecordUseCase,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
+    
+    // 提醒管理器
+    private val reminderManager = ReminderManager(context)
 
     // 下次服药信息
     private val _nextDose = MutableStateFlow<NextDoseModel?>(null)
@@ -97,6 +106,11 @@ class DashboardViewModel @Inject constructor(
         // 获取今日记录
         getTodayRecordsUseCase().onEach {
             _todayRecords.value = it
+        }.launchIn(viewModelScope)
+
+        // 重新设置所有提醒
+        getAllRemindersUseCase().onEach { reminders ->
+            reminderManager.resetAllReminders(reminders)
         }.launchIn(viewModelScope)
     }
 

@@ -60,4 +60,10 @@ interface MedicineDao {
      */
     @Query("SELECT COUNT(*) FROM medicines")
     suspend fun getMedicineCount(): Int
+
+    /**
+     * 删除所有药物
+     */
+    @Query("DELETE FROM medicines")
+    suspend fun deleteAllMedicines()
 }

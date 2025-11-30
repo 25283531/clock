@@ -1,5 +1,7 @@
 package com.medicinereminder.di
 
+import com.medicinereminder.domain.usecase.data.ExportDataUseCase
+import com.medicinereminder.domain.usecase.data.ImportDataUseCase
 import com.medicinereminder.domain.usecase.medicine.AddMedicineUseCase
 import com.medicinereminder.domain.usecase.medicine.DeleteMedicineUseCase
 import com.medicinereminder.domain.usecase.medicine.GetAllMedicinesUseCase
@@ -18,12 +20,15 @@ import com.medicinereminder.domain.usecase.record.DeleteRecordsBeforeDateUseCase
 import com.medicinereminder.domain.usecase.record.GetAllRecordsUseCase
 import com.medicinereminder.domain.usecase.record.GetTodayRecordsUseCase
 import com.medicinereminder.domain.usecase.record.UpdateMedicineRecordUseCase
+import android.content.Context
 import com.medicinereminder.data.repository.MedicineRepository
 import com.medicinereminder.data.repository.MedicineRecordRepository
 import com.medicinereminder.data.repository.ReminderRepository
+import com.medicinereminder.manager.DataExportImportManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -146,5 +151,34 @@ object UseCasesModule {
     @Singleton
     fun provideDeleteRecordsBeforeDateUseCase(medicineRecordRepository: MedicineRecordRepository): DeleteRecordsBeforeDateUseCase {
         return DeleteRecordsBeforeDateUseCase(medicineRecordRepository)
+    }
+
+    // 数据导出导入相关用例
+    @Provides
+    @Singleton
+    fun provideDataExportImportManager(
+        @ApplicationContext context: Context,
+        medicineRepository: MedicineRepository,
+        reminderRepository: ReminderRepository,
+        medicineRecordRepository: MedicineRecordRepository
+    ): DataExportImportManager {
+        return DataExportImportManager(
+            context = context,
+            medicineRepository = medicineRepository,
+            reminderRepository = reminderRepository,
+            medicineRecordRepository = medicineRecordRepository
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideExportDataUseCase(dataExportImportManager: DataExportImportManager): ExportDataUseCase {
+        return ExportDataUseCase(dataExportImportManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideImportDataUseCase(dataExportImportManager: DataExportImportManager): ImportDataUseCase {
+        return ImportDataUseCase(dataExportImportManager)
     }
 }

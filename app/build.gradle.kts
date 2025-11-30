@@ -80,6 +80,20 @@ dependencies {
 }
 
 // Configure kapt for annotation processing
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+        jvmTarget = "1.8"
+    }
+}
+
+// Configure kapt for annotation processing
+kotlin {
+    sourceSets.configureEach {
+        languageSettings.optIn("kotlin.RequiresOptIn")
+    }
+}
+
 kapt {
     correctErrorTypes = true
 }

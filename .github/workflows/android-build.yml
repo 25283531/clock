@@ -30,10 +30,11 @@ jobs:
       run: |
         # Ensure Gradle wrapper exists and is executable
         chmod +x ./gradlew 2>/dev/null || true
-        # Create gradle.properties with compatibility settings
-        echo 'org.gradle.jvmargs=-Xmx4g -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8' > gradle.properties
+        # Create gradle.properties with modern JVM options compatible with Java 17
+        echo 'org.gradle.jvmargs=-Xmx4g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8 -XX:+UseG1GC' > gradle.properties
         echo 'org.gradle.parallel=true' >> gradle.properties
         echo 'org.gradle.caching=true' >> gradle.properties
+        echo 'org.gradle.configureondemand=true' >> gradle.properties
 
     - name: Gradle Cache Configuration
       uses: actions/cache@v3
@@ -47,12 +48,16 @@ jobs:
 
     - name: Build Release APK
       run: |
-        # Use Gradle with proper options for compatibility
+        # Use Gradle with proper options for GitHub Actions environment
+        export GRADLE_OPTS="-Dorg.gradle.internal.launcher.welcomeMessageEnabled=false"
         gradle --version  # Check Gradle version
-        gradle assembleRelease --no-daemon --stacktrace --no-build-cache
+        gradle assembleRelease --no-daemon --stacktrace --no-build-cache --refresh-dependencies
 
     - name: Build Release AAB
-      run: gradle bundleRelease --no-daemon --stacktrace --no-build-cache
+      run: |
+        # Use Gradle with proper options for GitHub Actions environment
+        export GRADLE_OPTS="-Dorg.gradle.internal.launcher.welcomeMessageEnabled=false"
+        gradle bundleRelease --no-daemon --stacktrace --no-build-cache --refresh-dependencies
 
     - name: Get version name
       id: get_version

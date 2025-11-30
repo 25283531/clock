@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/primary">
+
+    <!-- 标题 -->
+    <TextView
+        android:id="@+id/widget_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/widget_next_dose"
+        android:textColor="@color/on_primary"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="8dp" />
+
+    <!-- 下次服药时间 -->
+    <TextView
+        android:id="@+id/widget_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="--:--"
+        android:textColor="@color/on_primary"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="8dp" />
+
+    <!-- 药物列表 -->
+    <TextView
+        android:id="@+id/widget_medicines"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/no_medicines"
+        android:textColor="@color/on_primary"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:layout_marginBottom="16dp" />
+
+    <!-- 服药按钮 -->
+    <CheckBox
+        android:id="@+id/widget_take_medicine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/widget_take_medicine"
+        android:textColor="@color/on_primary"
+        android:textSize="16sp"
+        android:buttonTint="@color/on_primary"
+        android:gravity="center"
+        android:checked="false" />
+
+</LinearLayout>

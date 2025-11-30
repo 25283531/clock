@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="250dp"
+    android:minHeight="100dp"
+    android:maxWidth="350dp"
+    android:maxHeight="150dp"
+    android:updatePeriodMillis="3600000" <!-- 1小时更新一次 -->
+    android:initialLayout="@layout/medicine_widget_layout"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen"
+    android:description="@string/widget_description"
+    android:previewLayout="@layout/medicine_widget_layout" />

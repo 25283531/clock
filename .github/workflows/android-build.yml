@@ -23,11 +23,26 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
 
+    - name: Create Gradle Wrapper
+      run: |
+        mkdir -p gradle/wrapper
+        echo 'distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+distributionUrl=https\://services.gradle.org/distributions/gradle-9.2.0-all.zip
+networkTimeout=10000
+validateDistributionUrl=true
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists' > gradle/wrapper/gradle-wrapper.properties
+        chmod +x ./gradlew || echo "No gradlew file to make executable"
+
+    - name: Make Gradle executable
+      run: chmod +x ./gradlew || true
+
     - name: Build Release APK
-      run: gradle assembleRelease
+      run: ./gradlew assembleRelease --gradle-version 9.2.0
 
     - name: Build Release AAB
-      run: gradle bundleRelease
+      run: ./gradlew bundleRelease --gradle-version 9.2.0
 
     - name: Get version name
       id: get_version

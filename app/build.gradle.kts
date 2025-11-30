@@ -5,11 +5,6 @@ plugins {
     kotlin("kapt")
 }
 
-kapt {
-    correctErrorTypes = true
-}
-
-
 android {
     namespace = "com.medicinereminder"
     compileSdk = 34
@@ -49,7 +44,7 @@ android {
     }
     packaging {
         resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes.add("/META-INF/{AL2.0,LGPL2.1}")
         }
     }
 }
@@ -84,6 +79,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
 
+// Configure kapt for annotation processing
 kapt {
     correctErrorTypes = true
 }

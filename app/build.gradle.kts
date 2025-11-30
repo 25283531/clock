@@ -25,7 +25,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            crunchPngs = false // 使用直接属性名而不是isCrunchPngs
+            isCrunchPngs = false
             proguardFiles("proguard-android-optimize.txt", "proguard-rules.pro")
         }
     }
@@ -35,7 +35,7 @@ android {
     }
     kotlin {
         compilerOptions {
-            jvmTarget = JavaVersion.VERSION_1_8
+            jvmTarget.set(JavaVersion.VERSION_1_8)
         }
     }
     buildFeatures {
@@ -86,7 +86,7 @@ dependencies {
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     compilerOptions {
         freeCompilerArgs.add("-Xopt-in=kotlin.RequiresOptIn")
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget.set(JavaVersion.VERSION_1_8)
     }
 }
 

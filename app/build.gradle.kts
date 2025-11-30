@@ -25,6 +25,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            crunchPngs = false // 使用直接属性名而不是isCrunchPngs
             proguardFiles("proguard-android-optimize.txt", "proguard-rules.pro")
         }
     }
@@ -32,8 +33,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
+    kotlin {
+        compilerOptions {
+            jvmTarget = JavaVersion.VERSION_1_8
+        }
     }
     buildFeatures {
         compose = true
@@ -81,9 +84,9 @@ dependencies {
 
 // Configure kapt for annotation processing
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
-        jvmTarget = "1.8"
+    compilerOptions {
+        freeCompilerArgs.add("-Xopt-in=kotlin.RequiresOptIn")
+        jvmTarget = JavaVersion.VERSION_1_8
     }
 }
 

@@ -35,16 +35,12 @@ jobs:
         zipStoreBase=GRADLE_USER_HOME
         zipStorePath=wrapper/dists
         EOF
-        chmod +x ./gradlew || echo "No gradlew file to make executable"
-
-    - name: Make Gradle executable
-      run: chmod +x ./gradlew || true
 
     - name: Build Release APK
-      run: ./gradlew assembleRelease --gradle-version 9.2.0
+      run: gradle assembleRelease --gradle-version 9.2.0
 
     - name: Build Release AAB
-      run: ./gradlew bundleRelease --gradle-version 9.2.0
+      run: gradle bundleRelease --gradle-version 9.2.0
 
     - name: Get version name
       id: get_version

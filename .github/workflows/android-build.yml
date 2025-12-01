@@ -30,7 +30,8 @@ jobs:
       run: |
         # Ensure Gradle wrapper and jar file have proper permissions
         chmod +x ./gradlew
-        chmod +r ./gradle/wrapper/gradle-wrapper.jar
+        chmod +rx ./gradle/wrapper/gradle-wrapper.jar
+        chmod -R +rx ./gradle
         # Create gradle.properties with optimized JVM options for Java 17 and AGP 8.7.2
         echo 'org.gradle.jvmargs=-Xmx4g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8 -XX:+UseG1GC'
         echo 'org.gradle.parallel=true'
@@ -54,7 +55,9 @@ jobs:
       run: |
         # Use Gradle with proper options for GitHub Actions environment
         chmod +x ./gradlew
-        export GRADLE_OPTS="-Dorg.gradle.internal.launcher.welcomeMessageEnabled=false"
+        chmod +rx ./gradle/wrapper/gradle-wrapper.jar
+        export GRADLE_OPTS="-Dorg.gradle.internal.launcher.welcomeMessageEnabled=false -Dorg.gradle.jvmargs=-Xmx4g"
+        ls -la ./gradle/wrapper/  # Debug permissions
         ./gradlew --version  # Check Gradle version
         ./gradlew assembleRelease --no-daemon --stacktrace --warning-mode=all
 
@@ -62,7 +65,8 @@ jobs:
       run: |
         # Use Gradle with proper options for GitHub Actions environment
         chmod +x ./gradlew
-        export GRADLE_OPTS="-Dorg.gradle.internal.launcher.welcomeMessageEnabled=false"
+        chmod +rx ./gradle/wrapper/gradle-wrapper.jar
+        export GRADLE_OPTS="-Dorg.gradle.internal.launcher.welcomeMessageEnabled=false -Dorg.gradle.jvmargs=-Xmx4g"
         ./gradlew bundleRelease --no-daemon --stacktrace --warning-mode=all
 
     - name: Get version name

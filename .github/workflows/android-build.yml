@@ -53,21 +53,19 @@ jobs:
 
     - name: Build Release APK
       run: |
-        # Use Gradle with proper options for GitHub Actions environment
-        chmod +x ./gradlew
-        chmod +rx ./gradle/wrapper/gradle-wrapper.jar
-        export GRADLE_OPTS="-Dorg.gradle.internal.launcher.welcomeMessageEnabled=false -Dorg.gradle.jvmargs=-Xmx4g"
+        # Use Java directly to run Gradle wrapper to avoid script interpreter issues
+        export JAVA_OPTS="-Xmx4g"
         ls -la ./gradle/wrapper/  # Debug permissions
-        ./gradlew --version  # Check Gradle version
-        ./gradlew assembleRelease --no-daemon --stacktrace --warning-mode=all
+        # Use java command directly to run the wrapper jar
+        java -jar ./gradle/wrapper/gradle-wrapper.jar --version  # Check Gradle version
+        java -jar ./gradle/wrapper/gradle-wrapper.jar assembleRelease --no-daemon --stacktrace --warning-mode=all
 
     - name: Build Release AAB
       run: |
-        # Use Gradle with proper options for GitHub Actions environment
-        chmod +x ./gradlew
-        chmod +rx ./gradle/wrapper/gradle-wrapper.jar
-        export GRADLE_OPTS="-Dorg.gradle.internal.launcher.welcomeMessageEnabled=false -Dorg.gradle.jvmargs=-Xmx4g"
-        ./gradlew bundleRelease --no-daemon --stacktrace --warning-mode=all
+        # Use Java directly to run Gradle wrapper to avoid script interpreter issues
+        export JAVA_OPTS="-Xmx4g"
+        # Use java command directly to run the wrapper jar
+        java -jar ./gradle/wrapper/gradle-wrapper.jar bundleRelease --no-daemon --stacktrace --warning-mode=all
 
     - name: Get version name
       id: get_version

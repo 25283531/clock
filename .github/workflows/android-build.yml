@@ -63,9 +63,16 @@ jobs:
     #   - caching: Enable Gradle build cache
     - name: Gradle Setup
       run: |
-        # Ensure Gradle wrapper has proper permissions
+        # Ensure Gradle wrapper script has execute permissions
         chmod +x ./gradlew
-        chmod +r ./gradle/wrapper/gradle-wrapper.jar
+        
+        # Verify Gradle wrapper integrity
+        if [ ! -f "./gradle/wrapper/gradle-wrapper.jar" ]; then
+          echo "Error: gradle-wrapper.jar not found"
+          exit 1
+        fi
+        echo "✓ Gradle wrapper files verified"
+        
         # Append CI-specific configuration to gradle.properties
         cat >> gradle.properties << 'EOF'
         # CI-specific Gradle configuration

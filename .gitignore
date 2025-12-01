@@ -74,3 +74,43 @@ Thumbs.db
 # Project specific files
 .kiro/
 .trae/
+
+# Compression files
+*.zip
+*.rar
+*.7z
+*.tar.gz
+*.tar.bz2
+*.tar
+
+# Compiler intermediate files
+.kotlin/
+.gradle/
+*.class
+*.log
+
+# Gradle distributions - avoid committing large Gradle zip files
+gradle-*-all.zip
+gradle-*-bin.zip
+
+# Build artifacts
+build/
+out/
+
+# IDE specific directories
+.idea/
+.vs/
+.vscode/
+*.sublime-workspace
+
+# Local History for Visual Studio Code
+.history/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

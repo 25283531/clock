@@ -85,5 +85,5 @@ jobs:
           - app/build/outputs/apk/release/app-release.apk
           - app/build/outputs/bundle/release/app-release.aab
         asset_names:
-          - medicine-reminder-v${{ steps.get_version.outputs.VERSION_NAME }}.apk
-          - medicine-reminder-v${{ steps.get_version.outputs.VERSION_NAME }}.aab
+          app/build/outputs/apk/release/app-release.apk: medicine-reminder-v${{ steps.get_version.outputs.VERSION_NAME }}.apk
+          app/build/outputs/bundle/release/app-release.aab: medicine-reminder-v${{ steps.get_version.outputs.VERSION_NAME }}.aab

@@ -28,8 +28,9 @@ jobs:
 
     - name: Gradle Setup
       run: |
-        # Ensure Gradle wrapper exists and is executable
-        chmod +x ./gradlew 2>/dev/null || true
+        # Ensure Gradle wrapper and jar file have proper permissions
+        chmod +x ./gradlew
+        chmod +r ./gradle/wrapper/gradle-wrapper.jar
         # Create gradle.properties with optimized JVM options for Java 17 and AGP 8.7.2
         echo 'org.gradle.jvmargs=-Xmx4g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8 -XX:+UseG1GC'
         echo 'org.gradle.parallel=true'
@@ -52,6 +53,7 @@ jobs:
     - name: Build Release APK
       run: |
         # Use Gradle with proper options for GitHub Actions environment
+        chmod +x ./gradlew
         export GRADLE_OPTS="-Dorg.gradle.internal.launcher.welcomeMessageEnabled=false"
         ./gradlew --version  # Check Gradle version
         ./gradlew assembleRelease --no-daemon --stacktrace --warning-mode=all
@@ -59,6 +61,7 @@ jobs:
     - name: Build Release AAB
       run: |
         # Use Gradle with proper options for GitHub Actions environment
+        chmod +x ./gradlew
         export GRADLE_OPTS="-Dorg.gradle.internal.launcher.welcomeMessageEnabled=false"
         ./gradlew bundleRelease --no-daemon --stacktrace --warning-mode=all
 

@@ -65,6 +65,7 @@ jobs:
       run: |
         # Ensure Gradle wrapper has proper permissions
         chmod +x ./gradlew
+        chmod +r ./gradle/wrapper/gradle-wrapper.jar
         # Append CI-specific configuration to gradle.properties
         cat >> gradle.properties << 'EOF'
         # CI-specific Gradle configuration

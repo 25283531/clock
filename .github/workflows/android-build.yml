@@ -1,3 +1,25 @@
+# Android Build and Release Workflow
+# 
+# This workflow builds the Medicine Reminder Android app and creates GitHub releases.
+# 
+# Triggers:
+#   - Push to master branch: Builds and creates a release
+#   - Pull requests to master: Builds only (no release)
+#
+# Build outputs:
+#   - APK: app/build/outputs/apk/release/app-release.apk
+#   - AAB: app/build/outputs/bundle/release/app-release.aab
+#
+# Requirements:
+#   - JDK 17 (compatible with JVM target 1.8)
+#   - Android SDK
+#   - Gradle 8.7.2
+#
+# Notes:
+#   - Uses Gradle daemon for faster builds
+#   - Caches Gradle dependencies to speed up subsequent builds
+#   - Generates unsigned release builds (signing should be added for production)
+
 name: Android Build and Release
 
 on:
@@ -11,11 +33,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # Step 1: Checkout the repository code
+    # fetch-depth: 0 ensures full git history for proper versioning
     - name: Checkout code
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
+    # Step 2: Set up Java Development Kit
+    # Using JDK 17 (Temurin distribution) which is compatible with JVM target 1.8
+    # Gradle cache is enabled to speed up dependency resolution
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
@@ -23,65 +50,127 @@ jobs:
         distribution: 'temurin'
         cache: 'gradle'
 
+    # Step 3: Set up Android SDK
+    # Required for Android-specific build tools and platform APIs
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
 
+    # Step 4: Configure Gradle for CI environment
+    # Appends CI-specific optimizations to gradle.properties:
+    #   - Xmx4g: Allocate 4GB heap memory for Gradle
+    #   - UseG1GC: Use G1 garbage collector for better performance
+    #   - parallel: Enable parallel project execution
+    #   - caching: Enable Gradle build cache
     - name: Gradle Setup
       run: |
-        # Ensure Gradle wrapper and jar file have proper permissions
+        # Ensure Gradle wrapper has proper permissions
         chmod +x ./gradlew
-        chmod +rx ./gradle/wrapper/gradle-wrapper.jar
-        chmod -R +rx ./gradle
-        # Create gradle.properties with optimized JVM options for Java 17 and AGP 8.7.2
-        echo 'org.gradle.jvmargs=-Xmx4g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8 -XX:+UseG1GC'
-        echo 'org.gradle.parallel=true'
-        echo 'org.gradle.caching=true'
-        echo 'org.gradle.configureondemand=false'
-        echo 'android.enableBuildCache=true'
-        echo 'android.buildCacheDir=$HOME/.android/build-cache'
+        # Append CI-specific configuration to gradle.properties
+        cat >> gradle.properties << 'EOF'
+        # CI-specific Gradle configuration
+        org.gradle.jvmargs=-Xmx4g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8 -XX:+UseG1GC
+        org.gradle.parallel=true
+        org.gradle.caching=true
+        org.gradle.configureondemand=false
+        android.enableBuildCache=true
+        android.buildCacheDir=$HOME/.android/build-cache
+        EOF
+        echo "Gradle configuration updated successfully"
+        echo "Final gradle.properties content:"
+        cat gradle.properties
 
+    # Step 5: Configure Gradle caching
+    # Caches Gradle dependencies and build outputs to speed up subsequent builds
+    # Cache key is based on OS and hash of all Gradle configuration files
     - name: Gradle Cache Configuration
       uses: actions/cache@v3
       with:
         path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-          ~/.android/build-cache
+          ~/.gradle/caches          # Gradle dependencies and build cache
+          ~/.gradle/wrapper         # Gradle wrapper distribution
+          ~/.android/build-cache    # Android build cache
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/libs.versions.toml') }}
         restore-keys: |
-          ${{ runner.os }}-gradle-
+          ${{ runner.os }}-gradle-  # Fallback to any Gradle cache for this OS
 
+    # Step 6: Build Release APK
+    # Generates an unsigned APK file for distribution
+    # Uses Gradle daemon for faster builds (removed --no-daemon)
+    # --stacktrace and --warning-mode=all provide detailed error information
     - name: Build Release APK
+      env:
+        GRADLE_OPTS: "-Dorg.gradle.internal.launcher.welcomeMessageEnabled=false"
       run: |
-        # Fix line endings and ensure proper execution permissions
-        dos2unix ./gradlew || true  # Convert to Unix line endings
-        chmod +x ./gradlew
-        # Set environment variables for Gradle
-        export GRADLE_OPTS="-Dorg.gradle.internal.launcher.welcomeMessageEnabled=false"
-        export JAVA_OPTS="-Xmx4g"
-        # Run Gradle with gradlew script
-        ./gradlew --version  # Check Gradle version
-        ./gradlew assembleRelease --no-daemon --stacktrace --warning-mode=all
+        ./gradlew --version
+        ./gradlew assembleRelease --stacktrace --warning-mode=all
 
+    # Step 7: Build Release AAB
+    # Generates an Android App Bundle for Google Play distribution
+    # AAB format is required for Play Store uploads
     - name: Build Release AAB
+      env:
+        GRADLE_OPTS: "-Dorg.gradle.internal.launcher.welcomeMessageEnabled=false"
       run: |
-        # Fix line endings and ensure proper execution permissions
-        dos2unix ./gradlew || true  # Convert to Unix line endings
-        chmod +x ./gradlew
-        # Set environment variables for Gradle
-        export GRADLE_OPTS="-Dorg.gradle.internal.launcher.welcomeMessageEnabled=false"
-        export JAVA_OPTS="-Xmx4g"
-        # Run Gradle with gradlew script
-        ./gradlew bundleRelease --no-daemon --stacktrace --warning-mode=all
+        ./gradlew bundleRelease --stacktrace --warning-mode=all
 
+    # Step 8: Extract version name from build configuration
+    # Uses awk for robust parsing of versionName from build.gradle.kts
+    # Validates extraction and fails with helpful error message if unsuccessful
     - name: Get version name
       id: get_version
       run: |
-        # More robust way to extract version name from build.gradle.kts
-        VERSION_NAME=$(cat app/build.gradle.kts | grep -A 1 "versionName" | grep -o '"[^"]*"' | tr -d '"')
+        # Extract version name using awk for robust parsing
+        VERSION_NAME=$(awk -F'"' '/versionName/ {print $2; exit}' app/build.gradle.kts)
+        
+        # Validate that version name was extracted
+        if [ -z "$VERSION_NAME" ]; then
+          echo "Error: Failed to extract version name from app/build.gradle.kts"
+          echo "Content around versionName:"
+          grep -C 3 "versionName" app/build.gradle.kts || echo "versionName not found in file"
+          exit 1
+        fi
+        
         echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_OUTPUT
-        echo "Extracted version name: $VERSION_NAME"
+        echo "Successfully extracted version name: $VERSION_NAME"
 
+    # Step 9: Verify build artifacts exist
+    # Only runs for pushes to master (before creating release)
+    # Checks that both APK and AAB files were generated successfully
+    # Provides helpful error messages with directory listings if files are missing
+    - name: Verify Build Artifacts
+      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+      run: |
+        echo "Verifying build artifacts exist..."
+        
+        APK_PATH="app/build/outputs/apk/release/app-release.apk"
+        AAB_PATH="app/build/outputs/bundle/release/app-release.aab"
+        
+        # Check APK
+        if [ ! -f "$APK_PATH" ]; then
+          echo "Error: APK file not found at $APK_PATH"
+          echo "Available files in apk/release directory:"
+          ls -la app/build/outputs/apk/release/ || echo "Directory does not exist"
+          exit 1
+        else
+          echo "✓ APK found: $APK_PATH ($(du -h "$APK_PATH" | cut -f1))"
+        fi
+        
+        # Check AAB
+        if [ ! -f "$AAB_PATH" ]; then
+          echo "Error: AAB file not found at $AAB_PATH"
+          echo "Available files in bundle/release directory:"
+          ls -la app/build/outputs/bundle/release/ || echo "Directory does not exist"
+          exit 1
+        else
+          echo "✓ AAB found: $AAB_PATH ($(du -h "$AAB_PATH" | cut -f1))"
+        fi
+        
+        echo "All build artifacts verified successfully"
+
+    # Step 10: Create GitHub Release
+    # Only runs for pushes to master branch
+    # Creates a new release with version tag and uploads APK and AAB files
+    # Uses GITHUB_TOKEN for authentication (automatically provided by GitHub)
     - name: Create Release
       if: github.event_name == 'push' && github.ref == 'refs/heads/master'
       uses: softprops/action-gh-release@v1

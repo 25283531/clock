@@ -65,7 +65,7 @@ class HistoryViewModel @Inject constructor(
      * 加载所有记录
      */
     fun loadAllRecords() {
-        getAllRecordsUseCase().onEach {\ records ->
+        getAllRecordsUseCase().onEach { records ->
             _records.value = records
         }.launchIn(viewModelScope)
     }
@@ -78,7 +78,7 @@ class HistoryViewModel @Inject constructor(
     fun getRecordsByDateRange(startDate: Date, endDate: Date) {
         _startDate.value = startDate
         _endDate.value = endDate
-        getRecordsByDateRangeUseCase(startDate, endDate).onEach {\ records ->
+        getRecordsByDateRangeUseCase(startDate, endDate).onEach { records ->
             _records.value = records
         }.launchIn(viewModelScope)
     }

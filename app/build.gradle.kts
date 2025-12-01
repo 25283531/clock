@@ -35,7 +35,7 @@ android {
     }
     kotlin {
         compilerOptions {
-            jvmTarget.set(JavaVersion.VERSION_1_8)
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
         }
     }
     buildFeatures {
@@ -57,7 +57,6 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
@@ -71,6 +70,7 @@ dependencies {
     implementation(libs.androidx.glance.appwidget)
     implementation(libs.androidx.glance.material3)
     implementation(libs.hilt.android)
+    implementation(libs.hilt.work)
     kapt(libs.hilt.compiler)
     kapt(libs.room.compiler)
     testImplementation("junit:junit:4.13.2")
@@ -86,7 +86,7 @@ dependencies {
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     compilerOptions {
         freeCompilerArgs.add("-Xopt-in=kotlin.RequiresOptIn")
-        jvmTarget.set(JavaVersion.VERSION_1_8)
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
     }
 }
 
@@ -100,3 +100,5 @@ kotlin {
 kapt {
     correctErrorTypes = true
 }
+
+

@@ -58,7 +58,7 @@ class ReminderViewModel @Inject constructor(
      * 加载提醒列表
      */
     private fun loadReminders() {
-        getAllRemindersUseCase().onEach {\ reminders ->
+        getAllRemindersUseCase().onEach { reminders ->
             _reminders.value = reminders
         }.launchIn(viewModelScope)
     }

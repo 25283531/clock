@@ -53,7 +53,7 @@ class AddEditReminderViewModel @Inject constructor(
      * 加载药物列表
      */
     private fun loadMedicines() {
-        getAllMedicinesUseCase().onEach {\ medicines ->
+        getAllMedicinesUseCase().onEach { medicines ->
             _medicines.value = medicines
         }.launchIn(viewModelScope)
     }

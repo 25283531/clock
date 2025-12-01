@@ -251,7 +251,7 @@ fun HistoryScreen(navController: NavHostController) {
                 modifier = Modifier.fillMaxSize().padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(records) {\ record ->
+                items(records) { record ->
                     MedicineRecordCard(
                         record = record,
                         onDelete = {

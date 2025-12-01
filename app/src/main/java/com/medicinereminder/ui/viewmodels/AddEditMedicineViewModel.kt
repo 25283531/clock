@@ -86,7 +86,7 @@ class AddEditMedicineViewModel @Inject constructor(
         val photoPath = savePhotoToLocal(uri, context)
         
         // 更新药物信息
-        _medicine.update {\ currentMedicine ->
+        _medicine.update { currentMedicine ->
             currentMedicine?.copy(photoPath = photoPath)
         }
         
@@ -98,7 +98,7 @@ class AddEditMedicineViewModel @Inject constructor(
      */
     fun deletePhoto() {
         // 更新药物信息，移除照片路径
-        _medicine.update {\ currentMedicine ->
+        _medicine.update { currentMedicine ->
             currentMedicine?.copy(photoPath = null)
         }
     }

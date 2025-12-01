@@ -2,6 +2,8 @@ package com.medicinereminder.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.medicinereminder.data.database.DateTypeConverters
 import java.util.Date
 
 /**
@@ -14,6 +16,7 @@ import java.util.Date
  * @property createdAt 创建时间
  */
 @Entity(tableName = "medicine_records")
+@TypeConverters(DateTypeConverters::class)
 data class MedicineRecord(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,

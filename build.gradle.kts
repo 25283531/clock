@@ -3,13 +3,5 @@ plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.hilt.android) apply false
+    alias(libs.plugins.ksp) apply false
 }
-
-// Gradle 9.2.0 compatibility configuration
-allprojects {
-    tasks.withType<JavaCompile>().configureEach {
-        options.compilerArgs.add("-parameters")
-    }
-}
-
-// Gradle 9.2.0 compatibility configuration - repositories are configured in settings.gradle.kts

@@ -30,10 +30,13 @@ jobs:
       run: |
         # Ensure Gradle wrapper exists and is executable
         chmod +x ./gradlew 2>/dev/null || true
-        # Create gradle.properties with modern JVM options compatible with Java 17
-        echo 'org.gradle.jvmargs=-Xmx4g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8 -XX:+UseG1GC' > gradle.properties
-        echo 'org.gradle.parallel=true' >> gradle.properties
-        echo 'org.gradle.caching=true' >> gradle.properties
+        # Create gradle.properties with optimized JVM options for Java 17 and AGP 8.7.2
+        echo 'org.gradle.jvmargs=-Xmx4g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8 -XX:+UseG1GC'
+        echo 'org.gradle.parallel=true'
+        echo 'org.gradle.caching=true'
+        echo 'org.gradle.configureondemand=false'
+        echo 'android.enableBuildCache=true'
+        echo 'android.buildCacheDir=$HOME/.android/build-cache'
 
     - name: Gradle Cache Configuration
       uses: actions/cache@v3
@@ -41,27 +44,28 @@ jobs:
         path: |
           ~/.gradle/caches
           ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          ~/.android/build-cache
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/libs.versions.toml') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
 
     - name: Build Release APK
       run: |
         # Use Gradle with proper options for GitHub Actions environment
-        export GRADLE_OPTS="-Dorg.gradle.internal.launcher.welcomeMessageEnabled=false -Dorg.gradle.configureondemand=false"
-        gradle --version  # Check Gradle version
-        gradle assembleRelease --no-daemon --stacktrace --no-build-cache --refresh-dependencies --warning-mode=all
+        export GRADLE_OPTS="-Dorg.gradle.internal.launcher.welcomeMessageEnabled=false"
+        ./gradlew --version  # Check Gradle version
+        ./gradlew assembleRelease --no-daemon --stacktrace --warning-mode=all
 
     - name: Build Release AAB
       run: |
         # Use Gradle with proper options for GitHub Actions environment
-        export GRADLE_OPTS="-Dorg.gradle.internal.launcher.welcomeMessageEnabled=false -Dorg.gradle.configureondemand=false"
-        gradle bundleRelease --no-daemon --stacktrace --no-build-cache --refresh-dependencies --warning-mode=all
+        export GRADLE_OPTS="-Dorg.gradle.internal.launcher.welcomeMessageEnabled=false"
+        ./gradlew bundleRelease --no-daemon --stacktrace --warning-mode=all
 
     - name: Get version name
       id: get_version
       run: |
-        # More robust way to extract version name
+        # More robust way to extract version name from build.gradle.kts
         VERSION_NAME=$(cat app/build.gradle.kts | grep -A 1 "versionName" | grep -o '"[^"]*"' | tr -d '"')
         echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_OUTPUT
         echo "Extracted version name: $VERSION_NAME"
@@ -69,33 +73,17 @@ jobs:
     - name: Create Release
       if: github.event_name == 'push' && github.ref == 'refs/heads/master'
       id: create_release
-      uses: actions/create-release@v1
+      uses: softprops/action-gh-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: v${{ steps.get_version.outputs.VERSION_NAME }}
-        release_name: Release v${{ steps.get_version.outputs.VERSION_NAME }}
+        name: Release v${{ steps.get_version.outputs.VERSION_NAME }}
         draft: false
         prerelease: false
-
-    - name: Upload APK to Release
-      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: app/build/outputs/apk/release/app-release.apk
-        asset_name: medicine-reminder-v${{ steps.get_version.outputs.VERSION_NAME }}.apk
-        asset_content_type: application/vnd.android.package-archive
-
-    - name: Upload AAB to Release
-      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: app/build/outputs/bundle/release/app-release.aab
-        asset_name: medicine-reminder-v${{ steps.get_version.outputs.VERSION_NAME }}.aab
-        asset_content_type: application/octet-stream
+        files:
+          - app/build/outputs/apk/release/app-release.apk
+          - app/build/outputs/bundle/release/app-release.aab
+        asset_names:
+          - medicine-reminder-v${{ steps.get_version.outputs.VERSION_NAME }}.apk
+          - medicine-reminder-v${{ steps.get_version.outputs.VERSION_NAME }}.aab

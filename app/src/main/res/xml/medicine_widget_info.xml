@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="250dp" <!-- 4个图标位置宽度 -->
-    android:minHeight="250dp" <!-- 4个图标位置高度 -->
-    android:maxWidth="320dp" <!-- 5个图标位置宽度 -->
-    android:maxHeight="320dp" <!-- 5个图标位置高度 -->
-    android:updatePeriodMillis="3600000" <!-- 1小时更新一次 -->
+    android:minWidth="250dp"
+    android:minHeight="250dp"
+    android:maxWidth="320dp"
+    android:maxHeight="320dp"
+    android:updatePeriodMillis="3600000"
     android:initialLayout="@layout/medicine_widget_layout_new"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"

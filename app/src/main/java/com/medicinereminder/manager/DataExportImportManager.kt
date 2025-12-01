@@ -58,8 +58,8 @@ class DataExportImportManager(
                 val jsonString = json.encodeToString(exportData)
 
                 // 写入文件
-                context.contentResolver.openOutputStream(uri)?.use {\ outputStream ->
-                    OutputStreamWriter(outputStream).use {\ writer ->
+                context.contentResolver.openOutputStream(uri)?.use { outputStream ->
+                    OutputStreamWriter(outputStream).use { writer ->
                         writer.write(jsonString)
                     }
                 }
@@ -84,7 +84,7 @@ class DataExportImportManager(
         return withContext(Dispatchers.IO) {
             try {
                 // 读取文件内容
-                val jsonString = context.contentResolver.openInputStream(uri)?.use {\ inputStream ->
+                val jsonString = context.contentResolver.openInputStream(uri)?.use { inputStream ->
                     BufferedReader(InputStreamReader(inputStream)).use { reader ->
                         reader.readText()
                     }

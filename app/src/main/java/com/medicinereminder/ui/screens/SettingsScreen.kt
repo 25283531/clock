@@ -47,7 +47,7 @@ fun SettingsScreen(
     val isVoiceReminderEnabled by viewModel.isVoiceReminderEnabled.collectAsState()
 
     // 导出结果处理
-    exportResult?.let {\ success ->
+    exportResult?.let { success ->
         Toast.makeText(
             context,
             if (success) "数据导出成功" else "数据导出失败",
@@ -57,7 +57,7 @@ fun SettingsScreen(
     }
 
     // 导入结果处理
-    importResult?.let {\ success ->
+    importResult?.let { success ->
         Toast.makeText(
             context,
             if (success) "数据导入成功" else "数据导入失败",

@@ -105,7 +105,7 @@ fun ReminderListScreen(navController: NavHostController) {
                 modifier = Modifier.fillMaxSize().padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(reminders) {\ reminder ->
+                items(reminders) { reminder ->
                     ReminderCard(
                         reminder = reminder,
                         onEdit = {

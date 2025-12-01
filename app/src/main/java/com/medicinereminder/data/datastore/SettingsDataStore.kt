@@ -38,7 +38,7 @@ class SettingsDataStore(private val dataStore: DataStore<Preferences>) {
      * 设置语音提醒开关状态
      */
     suspend fun setVoiceReminderEnabled(enabled: Boolean) {
-        dataStore.edit {\ preferences ->
+        dataStore.edit { preferences ->
             preferences[VOICE_REMINDER_ENABLED] = enabled
         }
     }

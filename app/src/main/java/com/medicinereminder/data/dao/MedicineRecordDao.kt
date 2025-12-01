@@ -5,6 +5,8 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import androidx.room.TypeConverters
+import com.medicinereminder.data.database.DateTypeConverters
 import com.medicinereminder.data.entity.MedicineRecord
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
@@ -13,6 +15,7 @@ import java.util.Date
  * 服药记录数据访问对象
  */
 @Dao
+@TypeConverters(DateTypeConverters::class)
 interface MedicineRecordDao {
     /**
      * 获取所有服药记录，按服药时间倒序排列

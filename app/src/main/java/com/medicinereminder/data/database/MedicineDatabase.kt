@@ -10,6 +10,7 @@ import com.medicinereminder.data.dao.ReminderDao
 import com.medicinereminder.data.entity.Medicine
 import com.medicinereminder.data.entity.MedicineRecord
 import com.medicinereminder.data.entity.Reminder
+import com.medicinereminder.data.database.DateTypeConverters
 
 /**
  * 药物提醒数据库
@@ -22,7 +23,8 @@ import com.medicinereminder.data.entity.Reminder
         MedicineRecord::class
     ],
     version = 1,
-    exportSchema = false
+    exportSchema = false,
+    typeConverters = [DateTypeConverters::class]
 )
 abstract class MedicineDatabase : RoomDatabase() {
 

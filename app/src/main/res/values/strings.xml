@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">服药提醒助手</string>
     <string name="widget_name">服药提醒小组件</string>
+    <string name="widget_description">服药提醒助手的桌面小组件，方便查看和管理服药提醒</string>
     <string name="add_medicine">添加药物</string>
     <string name="add_reminder">添加提醒</string>
     <string name="medicine_name">药物名称</string>

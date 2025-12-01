@@ -33,7 +33,7 @@ fun AppNavigation(navController: NavHostController) {
             MedicineListScreen(navController = navController)
         }
         // 添加/编辑药物
-        composable(route = "${Screen.AddEditMedicine.route}/{medicineId}?") {\ backStackEntry ->
+        composable(route = "${Screen.AddEditMedicine.route}/{medicineId}?") { backStackEntry ->
             val medicineId = backStackEntry.arguments?.getString("medicineId")?.toLongOrNull()
             AddEditMedicineScreen(
                 navController = navController,
@@ -45,7 +45,7 @@ fun AppNavigation(navController: NavHostController) {
             ReminderListScreen(navController = navController)
         }
         // 添加/编辑提醒
-        composable(route = "${Screen.AddEditReminder.route}/{reminderId}?") {\ backStackEntry ->
+        composable(route = "${Screen.AddEditReminder.route}/{reminderId}?") { backStackEntry ->
             val reminderId = backStackEntry.arguments?.getString("reminderId")?.toLongOrNull()
             AddEditReminderScreen(
                 navController = navController,

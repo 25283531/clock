@@ -30,7 +30,7 @@ class OnboardingViewModel @Inject constructor(
     // 从DataStore获取引导页面状态
     init {
         viewModelScope.launch {
-            getOnboardingCompleted().collect {\ completed ->
+            getOnboardingCompleted().collect { completed ->
                 _isOnboardingCompleted.value = completed
             }
         }
@@ -58,7 +58,7 @@ class OnboardingViewModel @Inject constructor(
      * 从DataStore获取引导页面是否已完成
      */
     private fun getOnboardingCompleted(): Flow<Boolean> {
-        return dataStore.data.map {\ preferences ->
+        return dataStore.data.map { preferences ->
             preferences[ONBOARDING_COMPLETED_KEY] ?: false
         }
     }
@@ -67,7 +67,7 @@ class OnboardingViewModel @Inject constructor(
      * 将引导页面状态保存到DataStore
      */
     private suspend fun setOnboardingCompleted(completed: Boolean) {
-        dataStore.edit {\ preferences ->
+        dataStore.edit { preferences ->
             preferences[ONBOARDING_COMPLETED_KEY] = completed
         }
     }

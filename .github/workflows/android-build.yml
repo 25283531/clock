@@ -72,15 +72,12 @@ jobs:
 
     - name: Create Release
       if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-      id: create_release
       uses: softprops/action-gh-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: v${{ steps.get_version.outputs.VERSION_NAME }}
         name: Release v${{ steps.get_version.outputs.VERSION_NAME }}
         draft: false
         prerelease: false
-        files:
-          - app/build/outputs/apk/release/app-release.apk
-          - app/build/outputs/bundle/release/app-release.aab
+        files: app/build/outputs/apk/release/app-release.apk,app/build/outputs/bundle/release/app-release.aab
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

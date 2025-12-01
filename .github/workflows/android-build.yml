@@ -82,8 +82,7 @@ jobs:
         draft: false
         prerelease: false
         files:
-          - app/build/outputs/apk/release/app-release.apk
-          - app/build/outputs/bundle/release/app-release.aab
-        asset_names:
-          app/build/outputs/apk/release/app-release.apk: medicine-reminder-v${{ steps.get_version.outputs.VERSION_NAME }}.apk
-          app/build/outputs/bundle/release/app-release.aab: medicine-reminder-v${{ steps.get_version.outputs.VERSION_NAME }}.aab
+          - path: app/build/outputs/apk/release/app-release.apk
+            name: medicine-reminder-v${{ steps.get_version.outputs.VERSION_NAME }}.apk
+          - path: app/build/outputs/bundle/release/app-release.aab
+            name: medicine-reminder-v${{ steps.get_version.outputs.VERSION_NAME }}.aab
